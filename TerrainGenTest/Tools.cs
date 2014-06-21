@@ -26,5 +26,11 @@ namespace TerrainGenTest
             int offset = val < 0 ? 1 : 0;
             return val - ((val + offset) / max - offset) * max;
         }
+
+        public static T Clamp<T>(this T val, T min, T max)
+            where T : IComparable<T>
+        {
+            return val.CompareTo(min) <= 0 ? min : val.CompareTo(max) >= 0 ? max : val;
+        }
     }
 }

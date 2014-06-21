@@ -17,23 +17,33 @@ namespace TerrainGenTest
         }
 
         private Terrain _terrain;
-
         private Camera _camera;
-        private ParticleShader _shader;
+        private LineShader _lineShader;
+        private TriangleShader _triShader;
+
+        public Program()
+            : base(1024, 576)
+        {
+
+        }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
-            _terrain = new Terrain(4, 4);
-            _terrain.Add(Material.Basalt, 1700f, 64);
-            _terrain.Add(Material.Water, 295f, 2);
+            _terrain = new Terrain(2048, 2048);
+            _terrain.Generate((int) DateTime.Now.Ticks);
+            _terrain.Save("terrain.map");
 
-            _camera = new Camera(Width, Height);
-            _camera.Position = new Vector3(2f, 8f, 5f);
+            _camera = new Camera(Width, Height, MathHelper.PiOver3, 1f, 4096f);
+            _camera.Position = new Vector3(1024f, 1024, 2048f + 512f);
             _camera.Pitch = MathHelper.PiOver4;
 
-            _shader = new ParticleShader {
+            _lineShader = new LineShader {
+                Camera = _camera
+            };
+
+            _triShader = new TriangleShader {
                 Camera = _camera
             };
 
@@ -42,22 +52,20 @@ namespace TerrainGenTest
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
-            _terrain.Simulate();
-
             if (Keyboard[Key.W]) {
-                _camera.Position -= Vector3.UnitZ;
+                _camera.Position -= Vector3.UnitZ * 2f;
             }
 
             if (Keyboard[Key.S]) {
-                _camera.Position += Vector3.UnitZ;
+                _camera.Position += Vector3.UnitZ * 2f;
             }
 
             if (Keyboard[Key.A]) {
-                _camera.Position -= Vector3.UnitX;
+                _camera.Position -= Vector3.UnitX * 2f;
             }
 
             if (Keyboard[Key.D]) {
-                _camera.Position += Vector3.UnitX;
+                _camera.Position += Vector3.UnitX * 2f;
             }
         }
 
@@ -65,9 +73,7 @@ namespace TerrainGenTest
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            _shader.Begin(true);
-            _shader.Render(_terrain);
-            _shader.End();
+            _terrain.RenderRegions(_triShader);
 
             SwapBuffers();
         }

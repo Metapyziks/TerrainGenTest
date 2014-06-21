@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LibNoise">
+      <HintPath>..\packages\LibNoise.0.2\lib\NET45\LibNoise.dll</HintPath>
+    </Reference>
     <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenTK.1.1.1589.5941\lib\NET40\OpenTK.dll</HintPath>
     </Reference>
@@ -45,14 +48,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Material.cs" />
-    <Compile Include="Particle.cs" />
-    <Compile Include="ParticleShader.cs" />
+    <Compile Include="CarveShader.cs" />
+    <Compile Include="HeightMapShader.cs" />
+    <Compile Include="LineShader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sector.cs" />
+    <Compile Include="Region.cs" />
+    <Compile Include="RegionShader.cs" />
+    <Compile Include="SmoothShader.cs" />
     <Compile Include="Terrain.cs" />
+    <Compile Include="TerrainGenerationShader.cs" />
     <Compile Include="Tools.cs" />
+    <Compile Include="TriangleShader.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
