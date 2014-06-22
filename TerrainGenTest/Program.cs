@@ -67,13 +67,21 @@ namespace TerrainGenTest
             if (Keyboard[Key.D]) {
                 _camera.Position += Vector3.UnitX * 2f;
             }
+
+            if (Keyboard[Key.Q]) {
+                _camera.Yaw -= MathHelper.Pi / 60f;
+            }
+
+            if (Keyboard[Key.E]) {
+                _camera.Yaw += MathHelper.Pi / 60f;
+            }
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            //GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            _terrain.RenderRegions(_triShader);
+            //_terrain.RenderRegions(_triShader);
 
             SwapBuffers();
         }

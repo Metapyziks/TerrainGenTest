@@ -30,7 +30,7 @@
                         }
                     }
 
-                    float slip = cur.a * min(0.5, length(grad) * 2) * dif * (cur.b * 0.5 + 0.3) * (0.1 + cur.r * 0.2);
+                    float slip = cur.a * dif * (cur.b * 0.6 + 0.2) * (0.1 + cur.r * 0.3);
                     float val = max(0, cur.a - slip);
                     out_colour = vec4(val, val, val, val);
                 }

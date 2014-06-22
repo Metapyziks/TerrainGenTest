@@ -16,6 +16,7 @@ namespace TerrainGenTest
 {
     sealed class Terrain
     {
+        const int GenDataScale = 4;
 
         public BitmapTexture2D GenData { get { return _genData; } }
         public AlphaTexture2D Texture { get { return (AlphaTexture2D) _front.Texture; } }
@@ -33,13 +34,14 @@ namespace TerrainGenTest
 
         public Terrain(int width, int height)
         {
-            _genData = new BitmapTexture2D(width, height);
+            _genData = new BitmapTexture2D(width / GenDataScale, height / GenDataScale);
 
             _front = new FrameBuffer(new AlphaTexture2D(width, height));
             _back = new FrameBuffer(new AlphaTexture2D(width, height));
         }
         private float GetRegionHeight(SimplexPerlin perlin, float x, float y)
         {
+            float a0 = perlin.GetValue(x / 32f, y / 32f) * 0.5f + 0.5f;
             float a1 = perlin.GetValue(x / 128f + 23f, y / 128f + 12f) * 0.5f + 0.5f;
             float a2 = perlin.GetValue(x / 512f - 39f, y / 512f - 81f) * 0.5f + 0.5f;
             float a3 = perlin.GetValue(x / 1024f, y / 1024f) * 0.5f + 0.5f;
@@ -48,26 +50,26 @@ namespace TerrainGenTest
 
             float landMass = (1.5f * (a3 * 0.8f + 0.2f) * (a1 * 0.2f + 0.8f) - pos.LengthSquared * 4f).Clamp(0f, 1f);
 
-            if (landMass < 0.5f) {
+            if (landMass * (a0 * 0.25f + 0.75f) < 0.25f) {
                 return a2 * landMass * 2f * 15f / 256f;
             }
 
-            landMass = landMass * 2f - 1f;
-            landMass *= landMass;
+            landMass = Math.Max(0f, landMass * 4f - 1f) / 3f;
+            //landMass *= landMass;
 
-            if (landMass < 0.5f) {
-                return Math.Min(1f, a2 * a1 * landMass * 4f * (47f / 256f) + 17f / 256f);
+            if (landMass < 0.75f) {
+                return Math.Min(1f, a0 * landMass * 8f * (47f / 256f) + 17f / 256f);
             }
 
-            landMass = landMass * 2f - 1f;
-            landMass *= landMass * landMass;
+            landMass = landMass * 4f - 3f;
+            landMass *= landMass;
 
-            return Math.Min(1f, a2 * a1 * a1 * landMass * 6f + 1f / 8f);
+            return Math.Min(1f, a2 * a2 * a1 * a1 * landMass * 8f + 1f / 8f);
         }
 
         public void Generate(int seed)
         {
-            const float maxDist = 32f;
+            const float maxDist = 24f;
 
             _regions = new List<Region>();
 
@@ -119,12 +121,15 @@ namespace TerrainGenTest
             var bmp = _genData.Bitmap;
             Console.WriteLine("Seeding");
 
-            for (int x = 0; x < Width; ++x) {
-                for (int y = 0; y < Height; ++y) {
+            for (int x = 0; x < Width / GenDataScale; ++x) {
+                for (int y = 0; y < Height / GenDataScale; ++y) {
+                    int sx = x * GenDataScale;
+                    int sy = y * GenDataScale;
+                    
                     int a = 255;
-                    int r = (int) (perlin.GetValue(x / 8f + 12f, y / 8f - 9f) * 128 + 127);
-                    int g = (int) (perlin.GetValue(x / 64f - 17f, y / 64f + 3f) * 128 + 127);
-                    int b = (int) (perlin.GetValue(x / 256f - 41f, y / 256f - 19f) * 128 + 127);
+                    int r = (int) (perlin.GetValue(sx / 8f + 12f, sy / 8f - 9f) * 128 + 127);
+                    int g = (int) (perlin.GetValue(sx / 64f - 17f, sy / 64f + 3f) * 128 + 127);
+                    int b = (int) (perlin.GetValue(sx / 256f - 41f, sy / 256f - 19f) * 128 + 127);
 
                     bmp.SetPixel(x, y, Color.FromArgb(
                         a.Clamp(0, 255),
@@ -136,21 +141,21 @@ namespace TerrainGenTest
 
             GenData.Invalidate();
 
-            for (int i = 0; i < 192; ++i) {
-                ShaderPass(carveShader);
-            }
-
-            for (int i = 0; i < 8; ++i) {
-                ShaderPass(smoothShader);
-            }
-
-            for (int i = 0; i < 32; ++i) {
+            for (int i = 0; i < 64; ++i) {
                 ShaderPass(carveShader);
             }
 
             for (int i = 0; i < 2; ++i) {
                 ShaderPass(smoothShader);
             }
+
+            //for (int i = 0; i < 16; ++i) {
+            //    ShaderPass(carveShader);
+            //}
+
+            //for (int i = 0; i < 2; ++i) {
+            //    ShaderPass(smoothShader);
+            //}
 
             smoothShader.Render(this);
         }

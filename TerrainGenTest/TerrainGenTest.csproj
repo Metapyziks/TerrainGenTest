@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Biome.cs" />
     <Compile Include="CarveShader.cs" />
     <Compile Include="HeightMapShader.cs" />
     <Compile Include="LineShader.cs" />
