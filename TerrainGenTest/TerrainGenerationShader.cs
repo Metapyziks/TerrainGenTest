@@ -15,8 +15,6 @@ namespace TerrainGenTest
     class TerrainGenerationShader : ShaderProgram2D
     {
         private static VertexBuffer _sVB;
-
-        private Terrain _terrain;
         
         protected override void ConstructVertexShader(ShaderBuilder vert)
         {
@@ -64,19 +62,17 @@ namespace TerrainGenTest
             }
         }
 
-        protected override void OnBegin()
-        {
-            base.OnBegin();
-
-            SetTexture("terrain", _terrain.Texture);
-            SetTexture("gendata", _terrain.GenData);
-
-            SetScreenSize(_terrain.Width, _terrain.Height);
-        }
-
         public void Render(Terrain terrain)
         {
-            _terrain = terrain;
+            SetTexture("terrain", terrain.Texture);
+            SetTexture("gendata", terrain.GenData);
+
+            Render(terrain.Width, terrain.Height);
+        }
+
+        public void Render(int width, int height)
+        {
+            SetScreenSize(width, height);
 
             _sVB.Begin(this);
             _sVB.Render();

@@ -5,11 +5,6 @@ using OpenTK;
 
 namespace TerrainGenTest
 {
-    class Border
-    {
-        public 
-    }
-
     class Region
     {
         private List<Vector2> _verts;
