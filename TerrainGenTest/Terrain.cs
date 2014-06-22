@@ -56,16 +56,12 @@ namespace TerrainGenTest
             }
 
             landMass = Math.Max(0f, landMass * 4f - 1f) / 3f;
-            //landMass *= landMass;
 
             if (landMass < 0.75f) {
-                return Math.Min(1f, a0 * landMass * 8f * (47f / 256f) + 17f / 256f);
+                return 18f / 256f + a1 * a2 * a3 * 1f / 2f;
             }
-
-            landMass = landMass * 4f - 3f;
-            landMass *= landMass;
-
-            return Math.Min(1f, a2 * a2 * a1 * a1 * landMass * 8f + 1f / 8f);
+            
+            return 1f;
         }
 
         public void Generate(int seed)
@@ -76,6 +72,8 @@ namespace TerrainGenTest
 
             var rand = new Random(seed);
             var perlin = new SimplexPerlin(seed, LibNoise.NoiseQuality.Standard);
+
+            Console.WriteLine("Generating regions...");
 
             int tries = 0;
             while (tries++ < 256) {
@@ -104,6 +102,8 @@ namespace TerrainGenTest
                 tries = 0;
             }
 
+            Console.WriteLine("Processing geometry...");
+
             var seedShader = new SeedShader();
             var regionShader = new RegionShader();
             var carveShader = new CarveShader();
@@ -128,7 +128,7 @@ namespace TerrainGenTest
             _vb.End();
             _front.End();
 
-            for (int i = 0; i < 192; ++i) {
+            for (int i = 0; i < 512; ++i) {
                 ShaderPass(carveShader);
             }
 

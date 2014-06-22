@@ -83,12 +83,12 @@
 
                 void main(void)
                 {
-                    float r = snoise((var_texcoord + vec2(3, -2)) * 256);
-                    float g = snoise((var_texcoord + vec2(-1, 4)) * 32);
-                    float b = snoise((var_texcoord + vec2(2, 1)) * 8);
-                    float a = 255;
+                    float r = snoise((var_texcoord + vec2(3, -2)) * 256) * 0.5 + 0.5;
+                    float g = snoise((var_texcoord + vec2(-1, 4)) * 32) * 0.5 + 0.5;
+                    float b = snoise((var_texcoord + vec2(2, 1)) * 8) * 0.5 + 0.5;
+                    float a = 1;
 
-                    out_colour = vec4(r, g, b, a);
+                    out_colour = vec4(0.2 + r * r * r * 0.2 + g * b * 0.6, g, b, a);
                 }
             ";
         }
