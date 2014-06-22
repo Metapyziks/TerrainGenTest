@@ -49,16 +49,16 @@ namespace TerrainGenTest
 
             var pos = new Vector2((float) x / Width, (float) y / Height) - new Vector2(0.5f, 0.5f);
 
-            float landMass = (1.5f * (a3 * 0.8f + 0.2f) * (a1 * 0.2f + 0.8f) - pos.LengthSquared * 4f).Clamp(0f, 1f);
+            float landMass = (2f * (a3 * 0.8f + 0.2f) * (a2 * 0.2f + 0.8f) - pos.LengthSquared * 6f).Clamp(0f, 1f);
 
-            if (landMass * (a0 * 0.25f + 0.75f) < 0.25f) {
+            if (landMass < 0.2f) {
                 return a2 * landMass * 2f * 15f / 256f;
             }
 
             landMass = Math.Max(0f, landMass * 4f - 1f) / 3f;
 
-            if (landMass < 0.75f) {
-                return 18f / 256f + a1 * a2 * a3 * 1f / 2f;
+            if (landMass < 0.5f) {
+                return 18f / 256f + landMass * 0.25f;
             }
             
             return 1f;

@@ -88,7 +88,7 @@
                     float b = snoise((var_texcoord + vec2(2, 1)) * 8) * 0.5 + 0.5;
                     float a = 1;
 
-                    out_colour = vec4(0.2 + r * r * r * 0.2 + g * b * 0.6, g, b, a);
+                    out_colour = vec4(min(1, 0.3 + r * r * r * 0.2 + g * b * 0.7), g, b, a);
                 }
             ";
         }
