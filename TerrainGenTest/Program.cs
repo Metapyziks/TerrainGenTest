@@ -11,8 +11,13 @@ namespace TerrainGenTest
     {
         static void Main(string[] args)
         {
-            using (var app = new Program()) {
-                app.Run();
+            var options = new ToolkitOptions();
+            options.Backend = PlatformBackend.PreferNative;
+
+            using (var toolkit = Toolkit.Init(options)) {
+                using (var app = new Program()) {
+                    app.Run();
+                }
             }
         }
 
@@ -79,9 +84,9 @@ namespace TerrainGenTest
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
-            //GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            //_terrain.RenderRegions(_triShader);
+            _terrain.RenderRegions(_triShader);
 
             SwapBuffers();
         }
